@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="MySwitchBtn">
+        <attr name="colorBackGroundDefault" format="color" />
+        <attr name="colorBackGroundFocus" format="color" />
+        <attr name="colorThumb" format="color" />
+
+    </declare-styleable>
+</resources>
