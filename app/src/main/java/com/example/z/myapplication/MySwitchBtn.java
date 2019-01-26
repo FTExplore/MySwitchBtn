@@ -14,7 +14,7 @@ public class MySwitchBtn extends View {
 
     private Paint mPaint;
 
-    private boolean sChecked;
+    private boolean sChecked = false;
 
     private boolean sCartooning;
 
@@ -28,9 +28,11 @@ public class MySwitchBtn extends View {
 
     private int mColorThumb;
 
-    private int mPaddingThumb = 5;
-
     private int mThumbCenterPointX = -1;
+
+    private int REFRESH_FREQUENCY = 10;
+
+    private int CARTOON_STEP_LENGHT = 5;
 
     public MySwitchBtn(Context context) {
         super(context);
@@ -89,7 +91,28 @@ public class MySwitchBtn extends View {
         } else if (mThumbCenterPointX > width - radius) {
             mThumbCenterPointX = width - radius;
         }
-        canvas.drawCircle(mThumbCenterPointX, height >> 1, radius - mPaddingThumb, mPaint);
+        canvas.drawCircle(mThumbCenterPointX, height >> 1, radius - mThumbPadding, mPaint);
+
+        // 3. cartoon
+        if (!sCartooning) {
+            return;
+        }
+
+        if (sChecked) {
+            if (mThumbCenterPointX < width - radius) {
+                mThumbCenterPointX = mThumbCenterPointX + CARTOON_STEP_LENGHT;
+                postDelayed(this::invalidate, REFRESH_FREQUENCY);
+            } else {
+                sCartooning = false;
+            }
+        } else {
+            if (mThumbCenterPointX > radius) {
+                mThumbCenterPointX = mThumbCenterPointX - CARTOON_STEP_LENGHT;
+                postDelayed(this::invalidate, REFRESH_FREQUENCY);
+            } else {
+                sCartooning = false;
+            }
+        }
     }
 
     @Override
