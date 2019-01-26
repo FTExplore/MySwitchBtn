@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -28,9 +29,9 @@ public class MySwitchBtn extends View {
 
     private int mColorThumb;
 
-    private int mThumbCenterPointX = -1;
+    private float mThumbCenterPointX = -1;
 
-    private int REFRESH_FREQUENCY = 10;
+    private int REFRESH_FREQUENCY = 5;
 
     private int CARTOON_STEP_LENGHT = 5;
 
@@ -76,15 +77,27 @@ public class MySwitchBtn extends View {
         int width = getMeasuredWidth();
         int height = getMeasuredHeight();
         int radius = Math.min(width, height) / 2;
-
+        if (mThumbCenterPointX == -1) {
+            mThumbCenterPointX = radius;
+        }
         // 1. draw back
         mRectF.left = 0;
         mRectF.right = width;
         mRectF.top = 0;
         mRectF.bottom = height;
         mPaint.setColor(sChecked ? mColorBackGroundFocus : mColorBackGroundDefault);
+        // calculate alpha
+        float alpha = 255;
+        if (sChecked) {
+            alpha = (mThumbCenterPointX / (width - radius)) * alpha;
+        } else {
+            alpha = ((width - mThumbCenterPointX) / (width - radius)) * alpha;
+        }
+        int result = alpha > 255 ? 255 : (int) alpha;
+        mPaint.setAlpha(result);
         canvas.drawRoundRect(mRectF, radius, radius, mPaint);
         // 2. draw thumb
+        mPaint.setAlpha(255);
         mPaint.setColor(mColorThumb);
         if (mThumbCenterPointX < radius) {
             mThumbCenterPointX = radius;
